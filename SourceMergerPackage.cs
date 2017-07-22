@@ -10,8 +10,11 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -41,25 +44,31 @@ namespace SourceMerger
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideOptionPage(typeof(SourceMergerOptionPageGrid), SourceMergerOptionPageGrid.SourceMergerCategoryName, "Settings", 0, 0, true)]
+    [ProvideAutoLoad(UIContextGuids.SolutionExists)]
     public sealed class SourceMergerPackage : Package
     {
-        /// <summary>
-        /// SourceMergerPackage GUID string.
-        /// </summary>
         public const string PackageGuidString = "3dbfe381-278c-44b1-a18e-e946ac39b2e6";
 
-        #region Package Members
+        private DTE2 dte;
+        private Events dteEvents;
+        private DocumentEvents documentEvents;
 
-        /// <summary>
-        /// Initialization of the package; this method is called right after the package is sited, so this is the place
-        /// where you can put all the initialization code that rely on services provided by VisualStudio.
-        /// </summary>
         protected override void Initialize()
         {
             SourceMerger.Initialize(this);
             base.Initialize();
+
+            //Save strong Reference to the DTE Object and Events
+            dte = (DTE2)GetGlobalService(typeof(DTE));
+            dteEvents = dte.Events;
+            documentEvents = dteEvents.DocumentEvents;
+            documentEvents.DocumentSaved += OnDocumentSaved;
         }
 
-        #endregion
+        private static void OnDocumentSaved(Document document)
+        {
+            SourceMerger.Instance.MergeActiveProjectSources();
+            MessageBox.Show("Merged Sources");
+        }
     }
 }
