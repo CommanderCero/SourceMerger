@@ -68,7 +68,6 @@ namespace SourceMerger
         private static void OnDocumentSaved(Document document)
         {
             SourceMerger.Instance.MergeActiveProjectSources();
-            MessageBox.Show("Merged Sources");
         }
     }
 }

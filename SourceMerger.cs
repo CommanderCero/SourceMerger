@@ -73,20 +73,10 @@ namespace SourceMerger
             File.WriteAllText($@"{settings.MergePath}\{settings.MergedFileName}.cs", resultContent);
         }
 
-        public static Regex UsingRegex = new Regex(@"using ([a-zA-Z\.]*);", RegexOptions.Compiled);
-        public static Regex NamespaceContentRegex = new Regex("namespace .*?{(?<content>.*)}", RegexOptions.Singleline | RegexOptions.Compiled);
         public string MergeSources(IEnumerable<string> sources)
         {
-            var usings = new HashSet<string>();
-            var content = new List<string>();
-
-            foreach (var source in sources)
-            {
-                foreach (var match in UsingRegex.Matches(source))
-                    usings.Add(match.ToString());
-
-                content.Add(NamespaceContentRegex.Match(source).Groups["content"].Value);
-            }
+            var usingsCollector = new UsingsCollector();
+            (var usings, var content) = usingsCollector.CollectUsings(sources);
 
             var builder = new StringBuilder();
             foreach (var u in usings)
