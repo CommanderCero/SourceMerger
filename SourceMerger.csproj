@@ -56,6 +56,7 @@
     <Compile Include="SourceMergerPackage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SourceMergerSettings.cs" />
     <Compile Include="UsingsCollector.cs" />
   </ItemGroup>
   <ItemGroup>
