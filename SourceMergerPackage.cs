@@ -26,27 +26,11 @@ using IServiceProvider = System.IServiceProvider;
 
 namespace SourceMerger
 {
-    public class SourceMergerOptionPageGrid : DialogPage
-    {
-        public const string SourceMergerCategoryName = "Source Merger";
-
-        [Category(SourceMergerCategoryName)]
-        [DisplayName("Merge Path")]
-        [Description("The merged file will be stored in this folder")]
-        public string MergePath { get; set; }
-
-        [Category(SourceMergerCategoryName)]
-        [DisplayName("Merged File Name")]
-        [Description("The name of the merged file")]
-        public string MergedFileName { get; set; }
-    }
-
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    [ProvideOptionPage(typeof(SourceMergerOptionPageGrid), SourceMergerOptionPageGrid.SourceMergerCategoryName, "Settings", 0, 0, true)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists)]
     public sealed class SourceMergerPackage : Package
     {
@@ -67,11 +51,13 @@ namespace SourceMerger
             dte = (DTE2)GetGlobalService(typeof(DTE));
             dteEvents = dte.Events;
             documentEvents = dteEvents.DocumentEvents;
-            documentEvents.DocumentSaved += OnDocumentSaved;
 
             Instance = new SourceMerger();
             if (!LoadSettings())
+            {
                 return;
+            }
+                
             InitializeCommands();
         }
 
@@ -80,10 +66,10 @@ namespace SourceMerger
             var commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService == null)
                 return;
-
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(Instance.MenuItemCallback, menuCommandID);
+            
+            var menuItem = new MenuCommand(Instance.MenuItemCallback, new CommandID(CommandSet, CommandId)) { Visible = true};
             commandService.AddCommand(menuItem);
+            documentEvents.DocumentSaved += OnDocumentSaved;
         }
 
         private bool LoadSettings()

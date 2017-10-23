@@ -26,7 +26,8 @@
     <Buttons>
       <Button guid="guidSourceMergerPackageCmdSet" id="SourceMergerId" priority="0x0100" type="Button">
         <Parent guid="guidSourceMergerPackageCmdSet" id="MyMenuGroup" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Merge Sources</ButtonText>
         </Strings>
