@@ -67,7 +67,7 @@ namespace SourceMerger
             if (commandService == null)
                 return;
             
-            var menuItem = new MenuCommand(Instance.MenuItemCallback, new CommandID(CommandSet, CommandId)) { Visible = true};
+            var menuItem = new MenuCommand((h, c)  => MergeStartupProject(), new CommandID(CommandSet, CommandId)) { Visible = true};
             commandService.AddCommand(menuItem);
             documentEvents.DocumentSaved += OnDocumentSaved;
         }
@@ -75,6 +75,9 @@ namespace SourceMerger
         private bool LoadSettings()
         {
             var settingsPath = Path.Combine(Path.GetDirectoryName(dte.Solution.FullName), "SourceMergerSettings.xml");
+            if (!File.Exists(settingsPath))
+                return false;
+
             try
             {
                 var xmlDocument = new XmlDocument();
@@ -108,7 +111,15 @@ namespace SourceMerger
 
         private void OnDocumentSaved(Document document)
         {
-            Instance.MergeActiveProjectSources();
+            MergeStartupProject();
+        }
+
+        private void MergeStartupProject()
+        {
+            var startupProject = dte.Solution.Item(((Array)dte.Solution.SolutionBuild.StartupProjects).GetValue(0));
+            var startupPath = Path.GetDirectoryName(startupProject.FullName);
+
+            Instance.MergeProject(startupPath);
         }
     }
 }
