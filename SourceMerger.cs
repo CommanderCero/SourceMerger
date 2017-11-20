@@ -33,7 +33,7 @@ namespace SourceMerger
 
             var builder = new StringBuilder();
             foreach (var u in usings)
-                builder.Append(u + "\n");
+                builder.Append("using " + u + ";\n");
             foreach (var c in content)
                 builder.Append(c + "\n");
 

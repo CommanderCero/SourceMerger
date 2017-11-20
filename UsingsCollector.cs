@@ -38,6 +38,11 @@ namespace SourceMerger
             {
                 Classes.Add(node.ToFullString());
             }
+
+            public override void VisitEnumDeclaration(EnumDeclarationSyntax node)
+            {
+                Classes.Add(node.ToFullString());
+            }
         }
     }
 }
