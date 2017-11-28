@@ -36,7 +36,7 @@ namespace SourceMerger
             {
                 SystemImports.Add(node.ToString());
             }
-            else if(collectedNamespaces.Contains(nodeName)) // Did we already collect the sources from the namespace?
+            else if(!collectedNamespaces.Contains(nodeName)) // Did we already collect the sources from the namespace?
             {
                 // Find the configured Path for the Namespace
                 var sourcePath = additionalSources.FirstOrDefault(x => x.Name == namespaceParts[0]);
@@ -45,7 +45,7 @@ namespace SourceMerger
 
                 // Create the folder path
                 // using Namespace.UnderNamespace => NamespacePath\UnderNamespace
-                var folderPath = string.Join(@"\", sourcePath.Path, namespaceParts.Skip(1));
+                var folderPath = Path.Combine(sourcePath.Path, Path.Combine(namespaceParts.Skip(1).ToArray()));
                 if(!Directory.Exists(folderPath))
                     throw new Exception($"The folder '{folderPath}' for the namespace '{node.Name}' could not be found");
 
