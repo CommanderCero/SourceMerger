@@ -20,22 +20,30 @@ namespace SourceMerger
 
         public void MergeProject(string projectPath)
         {
-            var files = Directory.GetFiles(projectPath, "*.cs", SearchOption.AllDirectories);
-            var resultContent = MergeSources(files.Select(File.ReadAllText));
+            var sourceCollector = new SourceCollector();
+            sourceCollector.CollectSources(projectPath, Settings.AdditionalSources);
 
-            File.WriteAllText($@"{Settings.MergeFolderPath}\{Settings.MergeFileName}.cs", resultContent);
+            var mergedContent = MergeSources(sourceCollector.SystemImports, sourceCollector.Declarations);
+            File.WriteAllText($@"{Settings.MergeFolderPath}\{Settings.MergeFileName}.cs", mergedContent);
         }
 
-        public string MergeSources(IEnumerable<string> sources)
+        public string MergeSources(IEnumerable<string> imports, IEnumerable<string> declarations)
         {
-            var usingsCollector = new UsingsCollector();
-            (var usings, var content) = usingsCollector.CollectUsings(sources);
-
             var builder = new StringBuilder();
-            foreach (var u in usings)
-                builder.Append("using " + u + ";\n");
-            foreach (var c in content)
-                builder.Append(c + "\n");
+            foreach (var import in imports)
+            {
+                builder.Append(import);
+                builder.AppendLine();
+            }
+
+            builder.AppendLine();
+
+            foreach (var declaration in declarations)
+            {
+                builder.Append(declaration);
+                builder.AppendLine();
+                builder.AppendLine();
+            }
 
             return builder.ToString();
         }

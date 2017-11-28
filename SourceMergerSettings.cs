@@ -8,9 +8,9 @@ namespace SourceMerger
 {
     public class SourceMergerSettings
     {
-        public string MergeFolderPath { get; set; }
-        public string MergeFileName { get; set; }
+        public string MergeFolderPath { get; set; } = @".\";
+        public string MergeFileName { get; set; } = "MergedSources";
 
-        public List<string> AdditionalSources { get; set; }
+        public List<SourcePath> AdditionalSources { get; set; } = new List<SourcePath>();
     }
 }
