@@ -52,12 +52,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SourceCollector.cs" />
-    <Compile Include="SourceMerger.cs" />
-    <Compile Include="SourceMergerPackage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="SourceMerger\SourceCollector.cs" />
+    <Compile Include="SourceMerger\SourceMerger.cs" />
+    <Compile Include="SourceMergerPackage.cs" />
     <Compile Include="SourceMergerSettings.cs" />
+    <Compile Include="SourceMerger\SourceMergerException.cs" />
     <Compile Include="SourcePath.cs" />
   </ItemGroup>
   <ItemGroup>

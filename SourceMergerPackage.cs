@@ -119,7 +119,20 @@ namespace SourceMerger
             var startupProject = dte.Solution.Item(((Array)dte.Solution.SolutionBuild.StartupProjects).GetValue(0));
             var startupPath = Path.GetDirectoryName(startupProject.FullName);
 
-            Instance.MergeProject(startupPath);
+            try
+            {
+                Instance.MergeProject(startupPath);
+            }
+            catch (SourceMergerException e)
+            {
+                VsShellUtilities.ShowMessageBox(
+                    this,
+                    e.Message,
+                    "An Error occured while mergin the sources",
+                    OLEMSGICON.OLEMSGICON_WARNING,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
         }
     }
 }

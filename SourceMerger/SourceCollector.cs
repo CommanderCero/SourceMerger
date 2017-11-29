@@ -41,13 +41,13 @@ namespace SourceMerger
                 // Find the configured Path for the Namespace
                 var sourcePath = additionalSources.FirstOrDefault(x => x.Name == namespaceParts[0]);
                 if(sourcePath == null)
-                    throw new Exception($"The namespace '{nodeName}' is not configured in AdditionalSources");
+                    throw new SourceMergerException($"The namespace '{nodeName}' is not configured in AdditionalSources");
 
                 // Create the folder path
                 // using Namespace.UnderNamespace => NamespacePath\UnderNamespace
                 var folderPath = Path.Combine(sourcePath.Path, Path.Combine(namespaceParts.Skip(1).ToArray()));
                 if(!Directory.Exists(folderPath))
-                    throw new Exception($"The folder '{folderPath}' for the namespace '{node.Name}' could not be found");
+                    throw new SourceMergerException($"The folder '{folderPath}' for the namespace '{node.Name}' could not be found.");
 
                 // Collect all content from the files in the folder
                 collectedNamespaces.Add(nodeName);
